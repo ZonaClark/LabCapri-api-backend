@@ -1,0 +1,142 @@
+#################### User ####################
+query {
+  users {
+    id
+    username
+    images {
+      imageUrl
+      diagnosis
+    }
+  }
+}
+
+query {
+  user(id: 1) {
+    username
+    role
+  }
+}
+
+mutation {
+  signUp(username: "test2", email:"test2@gmail.com", password: "test2psw"){
+    token
+  }
+}
+
+mutation {
+  signIn(login:"test2", password: "test2psw"){
+    token
+  }
+}
+
+# Invalid password sign in
+mutation {
+  signIn(login:"test2", password: "test2wpsw"){
+    token
+  }
+}
+
+# No user found sign in
+mutation {
+  signIn(login:"teswt2", password: "test2wpsw"){
+    token
+  }
+}
+
+# Update user with x-token provided in the header
+mutation {
+  updateUser(username: "updatedName") {
+    username
+    id
+  }
+}
+{
+  "x-token": "${sign-in token}"
+}
+
+
+# Delete user
+mutation {
+  deleteUser(id: 3)
+}
+
+query {
+  me {
+    username
+    role
+  }
+}
+
+#################### Image ####################
+query {
+  images {
+    edges {
+      id
+      user {
+        username
+      }
+      diagnosis
+      imageUrl
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}
+
+query {
+  image(id: 1) {
+    diagnosis
+    imageUrl
+  }
+}
+
+mutation {
+  createImage(diagnosis: "acne", imageUrl: "https://s3.amazonaws.com/skinimage") {
+    diagnosis
+    imageUrl
+  }
+}
+
+mutation {
+  deleteImage(id: 1)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

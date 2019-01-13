@@ -49,9 +49,10 @@ export default {
   Mutation: {
     createImage: combineResolvers(
       isAuthenticated,
-      async (parent, { diagnosis }, { models, me }) => {
+      async (parent, { diagnosis, imageUrl }, { models, me }) => {
         const image = await models.Image.create({
           diagnosis,
+          imageUrl,
           userId: me.id,
         });
 
