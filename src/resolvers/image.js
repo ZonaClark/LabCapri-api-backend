@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
 import pubsub, { EVENTS } from '../subscription';
-import { isAuthenticated, isMessageOwner } from './authorization';
+import { isAuthenticated, isImageOwner } from './authorization';
 
 const toCursorHash = string => Buffer.from(string).toString('base64');
 
@@ -11,7 +11,7 @@ const fromCursorHash = string =>
 
 export default {
   Query: {
-    messages: async (parent, { cursor, limit = 100 }, { models }) => {
+    images: async (parent, { cursor, limit = 100 }, { models }) => {
       const cursorOptions = cursor
         ? {
             where: {
@@ -22,14 +22,14 @@ export default {
           }
         : {};
 
-      const messages = await models.Message.findAll({
+      const images = await models.Image.findAll({
         order: [['createdAt', 'DESC']],
         limit: limit + 1,
         ...cursorOptions,
       });
 
-      const hasNextPage = messages.length > limit;
-      const edges = hasNextPage ? messages.slice(0, -1) : messages;
+      const hasNextPage = images.length > limit;
+      const edges = hasNextPage ? images.slice(0, -1) : images;
 
       return {
         edges,
@@ -41,46 +41,46 @@ export default {
         },
       };
     },
-    message: async (parent, { id }, { models }) => {
-      return await models.Message.findById(id);
+    image: async (parent, { id }, { models }) => {
+      return await models.Image.findById(id);
     },
   },
 
   Mutation: {
-    createMessage: combineResolvers(
+    createImage: combineResolvers(
       isAuthenticated,
-      async (parent, { text }, { models, me }) => {
-        const message = await models.Message.create({
-          text,
+      async (parent, { diagnosis }, { models, me }) => {
+        const image = await models.Image.create({
+          diagnosis,
           userId: me.id,
         });
 
-        pubsub.publish(EVENTS.MESSAGE.CREATED, {
-          messageCreated: { message },
+        pubsub.publish(EVENTS.IMAGE.CREATED, {
+          imageCreated: { image },
         });
 
-        return message;
+        return image;
       },
     ),
 
-    deleteMessage: combineResolvers(
+    deleteImage: combineResolvers(
       isAuthenticated,
-      isMessageOwner,
+      isImageOwner,
       async (parent, { id }, { models }) => {
-        return await models.Message.destroy({ where: { id } });
+        return await models.Image.destroy({ where: { id } });
       },
     ),
   },
 
-  Message: {
-    user: async (message, args, { loaders }) => {
-      return await loaders.user.load(message.userId);
+  Image: {
+    user: async (image, args, { loaders }) => {
+      return await loaders.user.load(image.userId);
     },
   },
 
   Subscription: {
-    messageCreated: {
-      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.CREATED),
+    imageCreated: {
+      subscribe: () => pubsub.asyncIterator(EVENTS.IMAGE.CREATED),
     },
   },
 };

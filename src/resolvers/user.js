@@ -84,8 +84,8 @@ export default {
   },
 
   User: {
-    messages: async (user, args, { models }) => {
-      return await models.Message.findAll({
+    images: async (user, args, { models }) => {
+      return await models.Image.findAll({
         where: {
           userId: user.id,
         },

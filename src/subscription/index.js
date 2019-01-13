@@ -1,9 +1,9 @@
 import { PubSub } from 'apollo-server';
 
-import * as MESSAGE_EVENTS from './message';
+import * as IMAGE_EVENTS from './image';
 
 export const EVENTS = {
-  MESSAGE: MESSAGE_EVENTS,
+  IMAGE: IMAGE_EVENTS,
 };
 
 export default new PubSub();

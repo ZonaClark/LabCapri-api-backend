@@ -87,12 +87,12 @@ const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 const isTest = !!process.env.TEST_DATABASE;
-const isProduction = !!process.env.DATABASE_URL;
+// const isProduction = !!process.env.DATABASE_URL;
 const port = process.env.PORT || 8000;
 
-sequelize.sync({ force: isTest || isProduction }).then(async () => {
-  if (isTest || isProduction) {
-    createUsersWithMessages(new Date());
+sequelize.sync({ force: isTest}).then(async () => {
+  if (isTest) {
+    createUsersWithImages(new Date());
   }
 
   httpServer.listen({ port }, () => {
@@ -100,43 +100,44 @@ sequelize.sync({ force: isTest || isProduction }).then(async () => {
   });
 });
 
-const createUsersWithMessages = async date => {
+const createUsersWithImages = async date => {
   await models.User.create(
     {
-      username: 'rwieruch',
-      email: 'hello@robin.com',
-      password: 'rwieruch',
+      username: 'zona',
+      email: 'zona@gmail.com',
+      password: 'zonapsw',
       role: 'ADMIN',
-      messages: [
+      images: [
         {
-          text: 'Published the Road to learn React',
+          diagnosis: 'Eczema',
+          imageUrl: 'https://s3.amazonaws.com/skinimage/IMG_3607.HEIC',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
     {
-      include: [models.Message],
+      include: [models.Image],
     },
   );
 
   await models.User.create(
     {
-      username: 'ddavids',
-      email: 'hello@david.com',
-      password: 'ddavids',
-      messages: [
+      username: 'user2',
+      email: 'user2@gmail.com',
+      password: 'user2psw',
+      images: [
         {
-          text: 'Happy to release ...',
+          imageUrl: 'https://s3.amazonaws.com/skinimage/test1',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
         {
-          text: 'Published a complete ...',
+          imageUrl: 'https://s3.amazonaws.com/skinimage/test2',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
     {
-      include: [models.Message],
+      include: [models.Image],
     },
   );
 };
