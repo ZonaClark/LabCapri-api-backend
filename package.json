@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "engines": {
-    "node": "10.11.0",
-    "npm": "6.5"
-  },
+  // "engines": {
+  //   "node": "10.11.0",
+  //   "npm": "6.5"
+  // },
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js",
+    "start": "npm start",
+    "start:dev": "nodemon --exec babel-node src/index.js",
     "test:run-server": "TEST_DATABASE=mytestdb npm start",
     "test:execute-test": "mocha --require @babel/register 'src/**/*.spec.js'",
     "test": "echo \"No test specified\" && exit 0"
