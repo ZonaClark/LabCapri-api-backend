@@ -8,6 +8,10 @@ const user = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
+        len: {
+          args: [2, 30],
+          msg: "Must be at between 2 and 30 characters."
+        }
       },
     },
     email: {
@@ -22,10 +26,6 @@ const user = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        len: [7, 42],
-      },
     },
     role: {
       type: DataTypes.STRING,
