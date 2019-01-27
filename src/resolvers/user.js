@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { combineResolvers } from 'graphql-resolvers';
 import { AuthenticationError, UserInputError } from 'apollo-server';
+import _ from 'lodash';
 
 import { isAdmin, isAuthenticated } from './authorization';
 
@@ -9,6 +10,13 @@ const createToken = async (user, secret, expiresIn) => {
   return await jwt.sign({ id, email, username, role }, secret, {
     expiresIn,
   });
+};
+
+const formatErrors = (err, models) => {
+  if (err instanceof models.sequelize.ValidationError) {
+    return err.errors.map(x => _.pick(x, ['path', 'message']));
+  }
+  return [{ path: 'server', message: 'something went wrong'}];
 };
 
 export default {
@@ -34,13 +42,23 @@ export default {
       { username, email, password },
       { models, secret },
     ) => {
-      const user = await models.User.create({
-        username,
-        email,
-        password,
-      });
-
-      return { token: createToken(user, secret, '30m') };
+      try {
+        const user = await models.User.create({
+          username,
+          email,
+          password,
+        });
+        const token = createToken(user, secret, '30m');
+        return {
+          success: true,
+          token,
+        };
+      } catch (err) {
+        return {
+          success: false,
+          errors: formatErrors(err, models),
+        };
+      }
     },
 
     signIn: async (

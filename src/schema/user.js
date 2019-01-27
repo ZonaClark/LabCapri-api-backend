@@ -1,5 +1,7 @@
 import { gql } from 'apollo-server-express';
 
+import Error from './error';
+
 export default gql`
   extend type Query {
     users: [User!]
@@ -8,19 +10,21 @@ export default gql`
   }
 
   extend type Mutation {
-    signUp(
+    signUp (
       username: String!
       email: String!
       password: String!
-    ): Token!
+    ): LoginResponse!
 
-    signIn(login: String!, password: String!): Token!
+    signIn(login: String!, password: String!): LoginResponse!
     updateUser(username: String!): User!
     deleteUser(id: ID!): Boolean!
   }
 
-  type Token {
-    token: String!
+  type LoginResponse {
+    success: Boolean!
+    errors: [Error!]
+    token: String
   }
 
   type User {

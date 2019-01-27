@@ -4,19 +4,29 @@ const user = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
     username: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: {
+        args: true,
+        msg: "Username already exists."
+      },
       allowNull: false,
       validate: {
         notEmpty: true,
         len: {
           args: [2, 30],
           msg: "Must be at between 2 and 30 characters."
-        }
+        },
+        isAlphanumeric: {
+          args: true,
+          msg: "Username can only contain alphabet and/or numbers."
+        },
       },
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: {
+        args: true,
+        msg: "Username already exists."
+      },
       allowNull: false,
       validate: {
         notEmpty: true,
