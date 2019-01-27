@@ -33,10 +33,7 @@ const user = (sequelize, DataTypes) => {
         isEmail: true,
       },
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    password: DataTypes.STRING,
     role: {
       type: DataTypes.STRING,
     },

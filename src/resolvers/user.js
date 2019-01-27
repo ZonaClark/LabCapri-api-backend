@@ -43,6 +43,17 @@ export default {
       { models, secret },
     ) => {
       try {
+        if (password.length < 5) {
+          return {
+            success: false,
+            errors: [
+              {
+                path: 'Password',
+                message: 'Password length needs to be larger than 5 characters',
+              },
+            ],
+          };
+        } 
         const user = await models.User.create({
           username,
           email,
